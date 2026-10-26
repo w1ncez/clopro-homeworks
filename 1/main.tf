@@ -60,7 +60,7 @@ users:
   - name: cloud-user
     sudo: ALL=(ALL) NOPASSWD:ALL
     ssh_authorized_keys:
-      - ${file("/home/w1nce/id_ed25519.pub")} # Укажите путь к вашему публичному SSH-ключу
+      - ${file("/home/w1nce/id_ed25519.pub")}
 runcmd:
   - sysctl -w net.ipv4.ip_forward=1
   - iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
@@ -211,14 +211,14 @@ resource "yandex_vpc_security_group" "vm-sg" {
   ingress {
     protocol       = "TCP"
     description    = "SSH from public subnet"
-    v4_cidr_blocks = ["192.168.10.0/24"]
+    v4_cidr_blocks = ["0.0.0.0/0"]
     port           = 22
   }
 
   ingress {
     protocol       = "TCP"
     description    = "SSH from private subnet"
-    v4_cidr_blocks = ["192.168.20.0/24"]
+    v4_cidr_blocks = ["192.168.20.0/24","192.168.10.0/24"]
     port           = 22
   }
 }
