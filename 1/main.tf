@@ -1,3 +1,6 @@
+public_vm_external_ip = "51.250.73.201"
+root@master-1:/home/w1nce# nano main.tf
+  GNU nano 7.2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   main.tf
 # VPC
 resource "yandex_vpc_network" "main-net" {
   name = "main-network"
@@ -52,7 +55,6 @@ resource "yandex_compute_instance" "nat-instance" {
 
   metadata = {
     user-data = <<EOF
-
 # cloud-config
 users:
   - name: cloud-user
@@ -99,6 +101,7 @@ resource "yandex_vpc_security_group" "nat-sg" {
     v4_cidr_blocks = ["192.168.10.0/24"]
   }
 }
+
 # Таблица маршрутизации для приватной подсети
 resource "yandex_vpc_route_table" "private-rt" {
   name       = "private-rt"
@@ -132,6 +135,7 @@ resource "yandex_compute_instance" "public-vm" {
       size     = 20
     }
   }
+
   network_interface {
     subnet_id          = yandex_vpc_subnet.public.id
     nat                = true
@@ -150,6 +154,7 @@ users:
 EOF
   }
 }
+
 # Приватная виртуальная машина
 resource "yandex_compute_instance" "private-vm" {
   name        = "private-vm"
@@ -209,15 +214,14 @@ resource "yandex_vpc_security_group" "vm-sg" {
     v4_cidr_blocks = ["192.168.10.0/24"]
     port           = 22
   }
- ingress {
+
+  ingress {
     protocol       = "TCP"
     description    = "SSH from private subnet"
     v4_cidr_blocks = ["192.168.20.0/24"]
     port           = 22
   }
 }
-
-
 
 
 
